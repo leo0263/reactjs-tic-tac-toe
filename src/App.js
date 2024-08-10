@@ -30,9 +30,9 @@ function Square({value, onSquareClick}) {
   );
 }
 
-function Board() {
-  const [xTurn, setXTurn] = useState(true);
-  const [squares, setSquares] = useState(Array(9).fill(null));
+function Board({ xTurn, squares, onPlay }) {
+  // const [xTurn, setXTurn] = useState(true);
+  // const [squares, setSquares] = useState(Array(9).fill(null));
 
   function handleClick(i) {
     if (squares[i] != null || checkWinPattern(squares)) return;
@@ -40,8 +40,9 @@ function Board() {
     const copySquares = squares.slice();
     if (xTurn) copySquares[i] = "X";
     else copySquares[i] = "0";
-    setXTurn(!xTurn);
-    setSquares(copySquares);
+    // setXTurn(!xTurn);
+    // setSquares(copySquares);
+    onPlay(copySquares);
   }
 
   const winner = checkWinPattern(squares);
@@ -71,4 +72,26 @@ function Board() {
   );
 }
 
-export default Board;
+function Game() {
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [xTurn, setXTurn] = useState(true);
+  const currentSquares = history[history.length -1];
+
+  function handlePlay(nextSquares) {
+    setHistory([...history, nextSquares]);
+    setXTurn(!xTurn);
+  }
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xTurn={xTurn} squares={currentSquares} onPlay={handlePlay}/>
+      </div>
+      <div className="game-info">
+        <ol>{/* TODO */}</ol>
+      </div>
+    </div>
+  )
+}
+
+export default Game;
